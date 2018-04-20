@@ -23,11 +23,24 @@ def getChoiceAfterPresenting(content):
     print("-!- You should have chosen where to pool time. Nothing to do, exiting.")
     exit(1)
 
+def addWorklog(targetIssue_key):
+    payload = {
+        "comment": "I did some work here.",
+        "visibility": {
+            "type": "group",
+            "value": "jira-developers"
+        },
+        "started": "2018-04-20T15:23:19.552+0000",
+        "timeSpentSeconds": 360
+    }
+    sesh.post(api_url + "/issue/ " + targetIssue_key + "/worklog", params=payload)
+
 
 if __name__ == "__main__":
     with JiraSession() as sesh:
         print("-=- Finding tickets with time logged today...")
         query_todaysLoggedTickets = "worklogAuthor = currentUser() AND worklogDate = endOfDay() "
         content = getContentForQuery(query_todaysLoggedTickets)
-        poolingTarget = getChoiceAfterPresenting(content)
-        print("-=- Logging time into the chosen ticket...")
+        targetIssue = getChoiceAfterPresenting(content)
+        print("-=- Logging time into the chosen ticket {}...".format(targetIssue["key"]))
+        addWorklog(targetIssue["key"])
