@@ -25,9 +25,9 @@ def getChoiceAfterPresenting(content):
 
 def addWorklog(targetIssue_key):
     payload = {
-        "comment": "I did some work here v2.",
-        "started": "2018-04-20T15:23:19.552+0000",
-        "timeSpentSeconds": 360
+        "comment": "Finishing time logged - this entry has been logged via API",
+        "started": "2018-04-20T16:03:19.552+0000",  # TODO: Time must be automatically derived
+        "timeSpentSeconds": 7200  # TODO: time spent should be calculated from the 7.5 remaining hours
     }
     print(api_url + "/issue/" + targetIssue_key + "/worklog")
     postOutcome = sesh.post(api_url + "/issue/" + targetIssue_key + "/worklog", json=payload)
