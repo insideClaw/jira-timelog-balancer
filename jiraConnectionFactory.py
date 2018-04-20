@@ -8,7 +8,7 @@ class JiraSession:
         self.base_url = "https://tasks.novarumcloud.com/"
         self.api_url = self.base_url + "rest/api/2"
         self.headers = {'Content-Type': 'application/json'}
-        self.debug = False
+        self.debug = True
 
     def askUserForCreds(self):
         '''Interactively asks for credentials and returns both'''

@@ -14,10 +14,18 @@ def getContentForQuery(query_filter):
     response_list = sesh.get(api_url + "/search?jql=" + jql_websafe_query)
     return(response_list.json())
 
+def getChoiceAfterPresenting(content):
+    i = 1
+    for issue in content['issues']:
+        print("#{} {}: {}".format(i, issue["key"], issue["fields"]["summary"]))
+        i += 1
+    choice = 1  # TODO: This is a placeholder
+    return(choice)
+
 
 if __name__ == "__main__":
     with JiraSession() as sesh:
         print("TODO: Find tickets with time logged today, ala tempo sheet")
         query_todaysLoggedTickets = "worklogAuthor = currentUser() AND worklogDate = endOfDay() "
-
         content = getContentForQuery(query_todaysLoggedTickets)
+        poolingTarget = getChoiceAfterPresenting(content)
