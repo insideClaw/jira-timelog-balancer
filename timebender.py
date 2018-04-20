@@ -15,17 +15,19 @@ def getContentForQuery(query_filter):
     return(response_list.json())
 
 def getChoiceAfterPresenting(content):
-    i = 1
     for issue in content['issues']:
-        print("#{} {}: {}".format(i, issue["key"], issue["fields"]["summary"]))
-        i += 1
-    choice = 1  # TODO: This is a placeholder
-    return(choice)
+        print("{}: {}".format(issue["key"], issue["fields"]["summary"]))
+        choice = input("-?- Do you want to pool time into this one? /y/\n")
+        if choice == "y":
+            return(issue)
+    print("-!- You should have chosen where to pool time. Nothing to do, exiting.")
+    exit(1)
 
 
 if __name__ == "__main__":
     with JiraSession() as sesh:
-        print("TODO: Find tickets with time logged today, ala tempo sheet")
+        print("-=- Finding tickets with time logged today...")
         query_todaysLoggedTickets = "worklogAuthor = currentUser() AND worklogDate = endOfDay() "
         content = getContentForQuery(query_todaysLoggedTickets)
         poolingTarget = getChoiceAfterPresenting(content)
+        print("-=- Logging time into the chosen ticket...")
