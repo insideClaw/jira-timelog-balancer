@@ -18,6 +18,6 @@ def getContentForQuery(query_filter):
 if __name__ == "__main__":
     with JiraSession() as sesh:
         print("TODO: Find tickets with time logged today, ala tempo sheet")
-        query_todaysLoggedTickets = "assignee=goodcat"
+        query_todaysLoggedTickets = "worklogAuthor = currentUser() AND worklogDate = endOfDay() "
 
         content = getContentForQuery(query_todaysLoggedTickets)
