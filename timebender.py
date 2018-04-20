@@ -3,6 +3,7 @@ from jiraConnectionFactory import JiraSession
 import urllib.request
 import urllib.parse
 import urllib.error
+import json
 
 # TODO: Remove duplication of constants
 base_url = "https://tasks.novarumcloud.com/"
@@ -26,14 +27,15 @@ def getChoiceAfterPresenting(content):
 def addWorklog(targetIssue_key):
     payload = {
         "comment": "I did some work here.",
-        "visibility": {
-            "type": "group",
-            "value": "jira-developers"
-        },
         "started": "2018-04-20T15:23:19.552+0000",
         "timeSpentSeconds": 360
     }
-    sesh.post(api_url + "/issue/ " + targetIssue_key + "/worklog", params=payload)
+    print(api_url + "/issue/" + targetIssue_key + "/worklog")
+    postOutcome = sesh.post(api_url + "/issue/" + targetIssue_key + "/worklog", data=json.dumps(payload))
+    if postOutcome.status_code == 201:
+        print("-=- Time logged well.")
+    else:
+        print("-!- Problem with error code {}".format(postOutcome.status_code))
 
 
 if __name__ == "__main__":
