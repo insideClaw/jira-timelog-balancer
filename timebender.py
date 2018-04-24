@@ -34,7 +34,8 @@ def getRemainingTime(content, targetIssue_key):
     # Has some other info at top level regarding all the worklogs in general, but we only everything from one
     for worklog in allWorklogs["worklogs"]:
         timeStarted = worklog.get("created")
-        print(timeStarted)
+        if timeStarted == today:
+            totalTimeLoggedToday += worklog.get("timeSpentSeconds")
 
     return(totalTimeLoggedToday)
 
