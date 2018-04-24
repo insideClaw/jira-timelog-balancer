@@ -34,9 +34,12 @@ def getRemainingTime(content, targetIssue_key):
     # Has some other info at top level regarding all the worklogs in general, but we only everything from one
     for worklog in allWorklogs["worklogs"]:
         timeStarted = worklog.get("created")
-        if timeStarted == today:
-            totalTimeLoggedToday += worklog.get("timeSpentSeconds")
-
+        today = dt.datetime.now().strftime("%Y-%m-%d")
+        if timeStarted[0:10] == today:
+            worklogTimeSpent = worklog.get("timeSpentSeconds")
+            totalTimeLoggedToday += worklogTimeSpent
+            print("-=- A worklog from today found, adding time of {} to the total.".format(worklogTimeSpent))
+    print(totalTimeLoggedToday)
     return(totalTimeLoggedToday)
 
 def addWorklog(targetIssue_key, time_to_pool):
