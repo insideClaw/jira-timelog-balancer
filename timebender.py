@@ -24,22 +24,22 @@ def getChoiceAfterPresenting(content):
     print("-!- You should have chosen where to pool time. Nothing to do, exiting.")
     exit(1)
 
-def getRemainingTime(content, targetIssue_key):
+def getRemainingTime(content):
     '''Takes all the tickets that have been worked all today, calculates the total time spent today, then
     returns how much needs logging up to 7.5 hours
     '''
+    today = dt.datetime.now().strftime("%Y-%m-%d")
     totalTimeLoggedToday = 0
-    # Get the worklogs for the issue
-    allWorklogs = sesh.get(api_url + "/issue/" + targetIssue_key + "/worklog").json()
-    # Has some other info at top level regarding all the worklogs in general, but we only everything from one
-    for worklog in allWorklogs["worklogs"]:
-        timeStarted = worklog.get("created")
-        today = dt.datetime.now().strftime("%Y-%m-%d")
-        if timeStarted[0:10] == today:
-            worklogTimeSpent = worklog.get("timeSpentSeconds")
-            totalTimeLoggedToday += worklogTimeSpent
-            print("-=- A worklog from today found, adding time of {} to the total.".format(worklogTimeSpent))
-    print(totalTimeLoggedToday)
+    for issue in content['issues']:
+        # Get the worklogs for the current issue
+        allWorklogs = sesh.get(api_url + "/issue/" + issue["key"] + "/worklog").json()
+        # Has some other info at top level regarding all the worklogs in general, but we only everything from one
+        for worklog in allWorklogs["worklogs"]:
+            timeStarted = worklog.get("created")
+            if timeStarted[0:10] == today:
+                worklogTimeSpent = worklog.get("timeSpentSeconds")
+                totalTimeLoggedToday += worklogTimeSpent
+                print("-=- A worklog was found for today's worked on ticket {}; adding time of {} to the total.".format(issue["key"],worklogTimeSpent))
     return(totalTimeLoggedToday)
 
 def addWorklog(targetIssue_key, time_to_pool):
@@ -61,7 +61,11 @@ if __name__ == "__main__":
         print("-=- Finding tickets with time logged today...")
         query_todaysLoggedTickets = "worklogAuthor = currentUser() AND worklogDate = endOfDay() "
         content = getContentForQuery(query_todaysLoggedTickets)
+
+        print("-=- Calculating time spent across all tickets today")
+        timeToBalance = getRemainingTime(content)
+        print(timeToBalance)
+
         targetIssue = getChoiceAfterPresenting(content)
         print("-=- Logging time into the chosen ticket {}...".format(targetIssue["key"]))
-        timeToBalance = getRemainingTime(content, targetIssue["key"])
         # addWorklog(targetIssue["key"], timeToBalance)
