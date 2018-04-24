@@ -29,13 +29,13 @@ def getRemainingTime(content, targetIssue_key):
     returns how much needs logging up to 7.5 hours
     '''
     totalTimeLoggedToday = 0
-    for issue in content['issues']:
-        allWorklogs = sesh.get(api_url + "/issue/" + targetIssue_key + "/worklog").json()
-        # Has some other info at top level regarding all the worklogs in general
-        for worklog in allWorklogs["worklogs"]:
-            print("GOING THRO WORKLOG AGAIN FOR TICKET {}".format(targetIssue_key))
-            timeStarted = worklog.get("created")
-            print(timeStarted)
+    # Get the worklogs for the issue
+    allWorklogs = sesh.get(api_url + "/issue/" + targetIssue_key + "/worklog").json()
+    # Has some other info at top level regarding all the worklogs in general, but we only everything from one
+    for worklog in allWorklogs["worklogs"]:
+        timeStarted = worklog.get("created")
+        print(timeStarted)
+
     return(totalTimeLoggedToday)
 
 def addWorklog(targetIssue_key, time_to_pool):
