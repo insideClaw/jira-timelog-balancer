@@ -24,11 +24,25 @@ def getChoiceAfterPresenting(content):
     print("-!- You should have chosen where to pool time. Nothing to do, exiting.")
     exit(1)
 
-def addWorklog(targetIssue_key):
+def getRemainingTime(content, targetIssue_key):
+    '''Takes all the tickets that have been worked all today, calculates the total time spent today, then
+    returns how much needs logging up to 7.5 hours
+    '''
+    totalTimeLoggedToday = 0
+    for issue in content['issues']:
+        allWorklogs = sesh.get(api_url + "/issue/" + targetIssue_key + "/worklog").json()
+        # Has some other info at top level regarding all the worklogs in general
+        for worklog in allWorklogs["worklogs"]:
+            print("GOING THRO WORKLOG AGAIN FOR TICKET {}".format(targetIssue_key))
+            timeStarted = worklog.get("created")
+            print(timeStarted)
+    return(totalTimeLoggedToday)
+
+def addWorklog(targetIssue_key, time_to_pool):
     payload = {
         "comment": "In-between miscellaneous work",
         "started": dt.datetime.now().strftime("%Y-%m-%dT%X.000+0000"),
-        "timeSpentSeconds": 60  # TODO: time spent should be calculated from the 7.5 remaining hours
+        "timeSpentSeconds": time_to_pool  # TODO: time spent should be calculated from the 7.5 remaining hours
     }
     print(api_url + "/issue/" + targetIssue_key + "/worklog")
     postOutcome = sesh.post(api_url + "/issue/" + targetIssue_key + "/worklog", json=payload)
@@ -45,4 +59,5 @@ if __name__ == "__main__":
         content = getContentForQuery(query_todaysLoggedTickets)
         targetIssue = getChoiceAfterPresenting(content)
         print("-=- Logging time into the chosen ticket {}...".format(targetIssue["key"]))
-        addWorklog(targetIssue["key"])
+        timeToBalance = getRemainingTime(content, targetIssue["key"])
+        # addWorklog(targetIssue["key"], timeToBalance)
