@@ -3,6 +3,7 @@ from jiraConnectionFactory import JiraSession
 import urllib.request
 import urllib.parse
 import urllib.error
+import datetime as dt
 
 # TODO: Remove duplication of constants
 base_url = "https://tasks.novarumcloud.com/"
@@ -25,9 +26,9 @@ def getChoiceAfterPresenting(content):
 
 def addWorklog(targetIssue_key):
     payload = {
-        "comment": "Finishing time logged - this entry has been logged via API",
-        "started": "2018-04-20T16:03:19.552+0000",  # TODO: Time must be automatically derived
-        "timeSpentSeconds": 7200  # TODO: time spent should be calculated from the 7.5 remaining hours
+        "comment": "In-between miscellaneous work",
+        "started": dt.datetime.now().strftime("%Y-%m-%dT%X.000+0000"),
+        "timeSpentSeconds": 60  # TODO: time spent should be calculated from the 7.5 remaining hours
     }
     print(api_url + "/issue/" + targetIssue_key + "/worklog")
     postOutcome = sesh.post(api_url + "/issue/" + targetIssue_key + "/worklog", json=payload)
