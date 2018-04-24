@@ -54,11 +54,10 @@ def presentNicelyInHours(seconds):
 
 def addWorklog(targetIssue_key, time_to_pool):
     payload = {
-        "comment": "In-between miscellaneous work",
+        "comment": "In-between miscellaneous work and analysis",
         "started": dt.datetime.now().strftime("%Y-%m-%dT%X.000+0000"),
         "timeSpentSeconds": time_to_pool  # TODO: time spent should be calculated from the 7.5 remaining hours
     }
-    print(api_url + "/issue/" + targetIssue_key + "/worklog")
     postOutcome = sesh.post(api_url + "/issue/" + targetIssue_key + "/worklog", json=payload)
     if postOutcome.status_code == 201:
         print("-=- Time successfully balanced up to 7.5 hours.")
@@ -79,4 +78,4 @@ if __name__ == "__main__":
         targetIssue = getChoiceAfterPresenting(content)
 
         print("-=- Logging {} hours into the chosen ticket {}...".format(presentNicelyInHours(remainingSecondsToLog), targetIssue["key"]))
-        # addWorklog(targetIssue["key"], remainingSecondsToLog)
+        addWorklog(targetIssue["key"], remainingSecondsToLog)
