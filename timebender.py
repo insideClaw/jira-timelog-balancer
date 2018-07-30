@@ -24,6 +24,17 @@ def getChoiceAfterPresenting(content):
     print("-!- You should have chosen where to pool time. Let's do it again!\n")
     getChoiceAfterPresenting(content)
 
+def stopNegativity(secondsToLog):
+    '''Breaks the script if the seconds to log are negative, otherwise passes them on.'''
+    if secondsToLog == 0:
+        print("-!- Time has been logged correctly to the minute! Have a nice evening.\n")
+        exit(0)
+    elif secondsToLog < 0:
+        print("-!- Somebody has been overzealous with logging time - remove/reduce some worklogs and try again.\n")
+        exit(0)
+    else:
+        return(secondsToLog)
+
 def getRemainingTime(content):
     '''Takes all the tickets that have been worked all today, calculates the total time spent today, then
     returns how much needs logging up to 7.5 hours
@@ -72,7 +83,7 @@ if __name__ == "__main__":
         content = getContentForQuery(query_todaysLoggedTickets)
 
         print("-=- Calculating time spent across all tickets today...")
-        remainingSecondsToLog = getRemainingTime(content)
+        remainingSecondsToLog = stopNegativity(getRemainingTime(content))
 
         print("-=- T i m e to choose which ticket to pool the remaining {} hours into...\n".format(presentNicelyInHours(remainingSecondsToLog)))
         targetIssue = getChoiceAfterPresenting(content)
