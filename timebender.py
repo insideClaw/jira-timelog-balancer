@@ -21,8 +21,8 @@ def getChoiceAfterPresenting(content):
         choice = input("-?- Do you want to pool time into this one? /y/\n")
         if choice == "y":
             return(issue)
-    print("-!- You should have chosen where to pool time. Nothing to do, exiting.")
-    exit(1)
+    print("-!- You should have chosen where to pool time. Let's do it again!\n")
+    getChoiceAfterPresenting(content)
 
 def getRemainingTime(content):
     '''Takes all the tickets that have been worked all today, calculates the total time spent today, then
