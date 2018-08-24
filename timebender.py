@@ -35,7 +35,7 @@ def stopNegativity(secondsToLog):
     else:
         return(secondsToLog)
 
-def getRemainingTime(content):
+def getRemainingTime(content, whoami):
     '''Takes all the tickets that have been worked all today, calculates the total time spent today, then
     returns how much needs logging up to 7.5 hours
     '''
@@ -47,6 +47,11 @@ def getRemainingTime(content):
         allWorklogs = sesh.get(api_url + "/issue/" + issue["key"] + "/worklog").json()
         # Has some other info at top level regarding all the worklogs in general, but we only everything from one
         for worklog in allWorklogs["worklogs"]:
+            # Make sure we don't count other people's time
+            author = worklog["author"]["name"]
+            if author != whoami:
+                continue
+
             timeStarted = worklog.get("created")
             if timeStarted[0:10] == today:
                 worklogTimeSpent = worklog.get("timeSpentSeconds")
@@ -82,8 +87,8 @@ if __name__ == "__main__":
         query_todaysLoggedTickets = "worklogAuthor = currentUser() AND worklogDate = endOfDay() "
         content = getContentForQuery(query_todaysLoggedTickets)
 
-        print("-=- Calculating time spent across all tickets today...")
-        remainingSecondsToLog = stopNegativity(getRemainingTime(content))
+        print("-=- Calculating time spent across all tickets today... may take some time to filter through old and other people's worklogs for each issue...")
+        remainingSecondsToLog = stopNegativity(getRemainingTime(content, sesh.auth[0]))
 
         print("-=- T i m e to choose which ticket to pool the remaining {} hours into...\n".format(presentNicelyInHours(remainingSecondsToLog)))
         targetIssue = getChoiceAfterPresenting(content)
