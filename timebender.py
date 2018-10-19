@@ -16,6 +16,10 @@ def getContentForQuery(query_filter):
     return(response_list.json())
 
 def getChoiceAfterPresenting(content):
+    if len(content['issues']) == 0:
+        print("-!- Can't operate on 0 issues, log some time anywhere first.")
+        exit(1)
+
     for issue in content['issues']:
         print("{}: {}".format(issue["key"], issue["fields"]["summary"]))
         choice = input("-?- Do you want to pool time into this one? /y/\n")
