@@ -20,13 +20,14 @@ def getChoiceAfterPresenting(content):
         print("-!- Can't operate on 0 issues, log some time anywhere first.")
         exit(1)
 
-    for issue in content['issues']:
-        print("{}: {}".format(issue["key"], issue["fields"]["summary"]))
-        choice = input("-?- Do you want to pool time into this one? /y/\n")
-        if choice == "y":
-            return(issue)
-    print("-!- You should have chosen where to pool time. Let's do it again!\n")
-    getChoiceAfterPresenting(content)
+    choice = None
+    while choice != "y":
+        for issue in content['issues']:
+            print("{}: {}".format(issue["key"], issue["fields"]["summary"]))
+            choice = input("-?- Do you want to pool time into this one? /y/\n")
+            if choice == "y":
+                return(issue)
+        print("-!- You should have chosen where to pool time. Let's do it again!\n")
 
 def stopNegativity(secondsToLog):
     '''Breaks the script if the seconds to log are negative, otherwise passes them on.'''
